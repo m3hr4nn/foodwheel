@@ -3,8 +3,8 @@ let countries = {};
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
 const spinBtn = document.getElementById('spin-btn');
-const modal = document.getElementById('recipe-modal');
-const closeBtn = document.querySelector('.close');
+const wheelContainer = document.querySelector('.wheel-container');
+const recipeSection = document.getElementById('recipe-section');
 
 const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
 
@@ -61,9 +61,21 @@ function spin() {
     function animate(time) {
         const elapsed = time - start;
         const progress = Math.min(elapsed / duration, 1);
-        const easeOut = 1 - Math.pow(1 - progress, 3);
 
-        currentRotation = spinRotation * easeOut;
+        // Fast -> Medium -> Slow easing
+        let easeProgress;
+        if (progress < 0.3) {
+            // Fast (first 30%)
+            easeProgress = progress * 3.33 * 0.5;
+        } else if (progress < 0.7) {
+            // Medium (30-70%)
+            easeProgress = 0.5 + (progress - 0.3) * 2.5 * 0.3;
+        } else {
+            // Slow (last 30%)
+            easeProgress = 0.8 + (1 - Math.pow(1 - (progress - 0.7) / 0.3, 3)) * 0.2;
+        }
+
+        currentRotation = spinRotation * easeProgress;
 
         ctx.clearRect(0, 0, 500, 500);
         ctx.save();
@@ -103,12 +115,13 @@ function showResult() {
         `;
 
         document.getElementById('recipe-instructions').textContent = recipe.instructions || 'دستور پخت موجود نیست';
-        modal.style.display = 'block';
+        recipeSection.classList.add('active');
     }
 }
 
 spinBtn.addEventListener('click', spin);
-closeBtn.addEventListener('click', () => modal.style.display = 'none');
-window.addEventListener('click', (e) => {
-    if (e.target === modal) modal.style.display = 'none';
+wheelContainer.addEventListener('click', (e) => {
+    if (e.target === wheelContainer || e.target === canvas) {
+        spin();
+    }
 });
