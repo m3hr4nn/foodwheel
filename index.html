@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>چرخ غذا - امروز چی بخوریم؟</title>
+    <title>FoodWheel - What Should I Eat?</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>امروز چی بخوریم؟</h1>
+    <div class="header">
+        <h1 id="main-title">What Should I Eat?</h1>
+        <button class="lang-toggle" id="lang-toggle">فا</button>
+    </div>
+
     <div class="container">
         <div class="wheel-section">
             <div class="wheel-container">
                 <div class="indicator"></div>
                 <canvas id="wheel" width="500" height="500"></canvas>
-                <button id="spin-btn">بچرخان!</button>
+                <button id="spin-btn">SPIN!</button>
             </div>
         </div>
 
