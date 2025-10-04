@@ -160,39 +160,23 @@ h1::after {
 
 #wheel {
     border-radius: 50%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.9),
-                0 0 80px rgba(255, 215, 0, 0.3),
-                inset 0 0 50px rgba(0,0,0,0.5);
-    border: 15px solid transparent;
-    background: linear-gradient(#1a1a1a, #1a1a1a) padding-box,
-                linear-gradient(135deg, #FFD700, #FFA500, #FFD700) border-box;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7),
+                0 0 40px rgba(0, 0, 0, 0.5);
+    border: none;
 }
 
 .indicator {
     position: absolute;
-    right: -40px;
+    right: -15px;
     top: 50%;
     transform: translateY(-50%);
     width: 0;
     height: 0;
-    border-top: 35px solid transparent;
-    border-bottom: 35px solid transparent;
-    border-right: 55px solid #FFD700;
-    filter: drop-shadow(0 5px 20px rgba(255,215,0,0.8))
-            drop-shadow(0 0 10px rgba(255,215,0,0.6));
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-right: 40px solid #E74C3C;
+    filter: drop-shadow(0 3px 10px rgba(231, 76, 60, 0.6));
     z-index: 10;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        filter: drop-shadow(0 5px 20px rgba(255,215,0,0.8))
-                drop-shadow(0 0 10px rgba(255,215,0,0.6));
-    }
-    50% {
-        filter: drop-shadow(0 5px 35px rgba(255,215,0,1))
-                drop-shadow(0 0 25px rgba(255,215,0,0.9));
-    }
 }
 
 .indicator.glow {
@@ -201,13 +185,13 @@ h1::after {
 
 @keyframes glow {
     0% {
-        filter: drop-shadow(0 5px 15px rgba(255,215,0,0.6));
+        filter: drop-shadow(0 3px 10px rgba(231, 76, 60, 0.6));
     }
     50% {
-        filter: drop-shadow(0 0 40px rgba(255,215,0,1)) drop-shadow(0 0 60px rgba(255,215,0,0.8));
+        filter: drop-shadow(0 0 30px rgba(231, 76, 60, 1)) drop-shadow(0 0 50px rgba(231, 76, 60, 0.8));
     }
     100% {
-        filter: drop-shadow(0 5px 15px rgba(255,215,0,0.6));
+        filter: drop-shadow(0 3px 10px rgba(231, 76, 60, 0.6));
     }
 }
 
@@ -216,77 +200,34 @@ h1::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 110px;
-    height: 110px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
-    border: 6px solid #FFD700;
-    background: linear-gradient(135deg, #FF1744 0%, #D50000 100%);
-    color: white;
-    font-size: 1.4rem;
-    font-weight: 900;
-    letter-spacing: 1px;
+    border: none;
+    background: #FFFFFF;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     cursor: pointer;
-    box-shadow: 0 10px 40px rgba(255,0,0,0.6),
-                0 0 30px rgba(255,215,0,0.3),
-                inset 0 2px 0 rgba(255,255,255,0.3),
-                inset 0 -2px 5px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     z-index: 20;
-    animation: btnPulse 2s ease-in-out infinite;
-    position: relative;
-    overflow: hidden;
-}
-
-#spin-btn::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
-    animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@keyframes btnPulse {
-    0%, 100% {
-        box-shadow: 0 10px 40px rgba(255,0,0,0.6),
-                    0 0 30px rgba(255,215,0,0.3),
-                    inset 0 2px 0 rgba(255,255,255,0.3),
-                    inset 0 -2px 5px rgba(0,0,0,0.5);
-    }
-    50% {
-        box-shadow: 0 10px 50px rgba(255,0,0,0.8),
-                    0 0 50px rgba(255,215,0,0.6),
-                    inset 0 2px 0 rgba(255,255,255,0.3),
-                    inset 0 -2px 5px rgba(0,0,0,0.5);
-    }
 }
 
 #spin-btn:hover {
-    transform: translate(-50%, -50%) scale(1.15);
-    background: linear-gradient(135deg, #D50000 0%, #B71C1C 100%);
-    border-color: #FFA500;
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
 }
 
 #spin-btn:active {
-    transform: translate(-50%, -50%) scale(1.05);
+    transform: translate(-50%, -50%) scale(0.95);
 }
 
 #spin-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
-    animation: none;
     transform: translate(-50%, -50%);
-}
-
-#spin-btn:disabled::before {
-    animation: none;
 }
 
 .recipe-section {

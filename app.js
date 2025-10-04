@@ -12,7 +12,7 @@ const htmlTag = document.documentElement;
 const cuisineFilter = document.getElementById('cuisine-filter');
 const timeFilter = document.getElementById('time-filter');
 
-const colors = ['#000000', '#FFFFFF'];
+const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
 let currentLang = 'en';
 let currentRotation = 0;
 let isSpinning = false;
@@ -146,6 +146,23 @@ async function loadData() {
                 });
 
                 drawWheel();
+            })
+            .catch(err => {
+                // Final fallback: use demo data
+                console.warn('Using demo data:', err);
+                allRecipes = [
+                    { id: 1, name: "پیتزا پپرونی", cookingTime: 30, prepareTime: 20, country: "IT" },
+                    { id: 2, name: "کباب کوبیده", cookingTime: 25, prepareTime: 30, country: "IR" },
+                    { id: 3, name: "سوشی", cookingTime: 15, prepareTime: 45, country: "JP" },
+                    { id: 4, name: "تاکو", cookingTime: 20, prepareTime: 15, country: "MX" },
+                    { id: 5, name: "برگر", cookingTime: 15, prepareTime: 10, country: "US" },
+                    { id: 6, name: "پاستا کربونارا", cookingTime: 20, prepareTime: 10, country: "IT" },
+                    { id: 7, name: "قورمه سبزی", cookingTime: 90, prepareTime: 30, country: "IR" },
+                    { id: 8, name: "رامن", cookingTime: 30, prepareTime: 20, country: "JP" }
+                ];
+                recipes = allRecipes;
+                countries = { "IR": "Iran", "IT": "Italy", "JP": "Japan", "MX": "Mexico", "US": "USA" };
+                drawWheel();
             });
     }
 }
@@ -183,28 +200,67 @@ function getDifficulty(recipe) {
 }
 
 function drawWheel() {
-    const sliceAngle = (2 * Math.PI) / 8;
+    const numSlices = Math.min(recipes.length, 8);
+    const sliceAngle = (2 * Math.PI) / numSlices;
+    const centerX = 250;
+    const centerY = 250;
+    const radius = 235;
+    const innerRadius = 60;
 
-    for (let i = 0; i < 8; i++) {
+    // Draw slices
+    for (let i = 0; i < numSlices; i++) {
+        const startAngle = i * sliceAngle;
+        const endAngle = (i + 1) * sliceAngle;
+
+        // Draw slice
         ctx.beginPath();
-        ctx.fillStyle = colors[i % 2];
-        ctx.moveTo(250, 250);
-        ctx.arc(250, 250, 250, i * sliceAngle, (i + 1) * sliceAngle);
-        ctx.lineTo(250, 250);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.lineTo(centerX, centerY);
         ctx.fill();
 
-        ctx.save();
-        ctx.translate(250, 250);
-        ctx.rotate(i * sliceAngle + sliceAngle / 2);
-        ctx.textAlign = 'center';
-        ctx.fillStyle = colors[i % 2] === '#000000' ? '#FFD700' : '#000000';
-        ctx.font = 'bold 18px Arial';
-
+        // Draw text
         if (recipes[i]) {
-            ctx.fillText(recipes[i].name.substring(0, 18), 150, 10);
+            ctx.save();
+            ctx.translate(centerX, centerY);
+
+            // Rotate to slice middle
+            const textAngle = startAngle + sliceAngle / 2;
+            ctx.rotate(textAngle);
+
+            // Position text at 60% of radius from center
+            const textRadius = (radius + innerRadius) / 2;
+
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 16px Arial, sans-serif';
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 3;
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 1;
+
+            // Draw text along the radius
+            const text = recipes[i].name.length > 15 ? recipes[i].name.substring(0, 15) + '...' : recipes[i].name;
+            ctx.fillText(text, textRadius, 0);
+
+            ctx.restore();
         }
-        ctx.restore();
     }
+
+    // Draw center white circle (donut hole)
+    ctx.beginPath();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Add subtle shadow to center circle
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.lineWidth = 2;
+    ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
+    ctx.stroke();
 }
 
 function spin() {
