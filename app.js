@@ -116,7 +116,11 @@ function spin() {
 function showResult() {
     const normalizedRotation = currentRotation % 360;
     const sliceAngle = 360 / 8;
-    const selectedIndex = Math.floor((360 - normalizedRotation + sliceAngle / 2) / sliceAngle) % 8;
+    // Indicator points to the right (east/0 degrees)
+    // Calculate which slice is at the indicator position
+    const indicatorAngle = 0; // Right side
+    const adjustedAngle = (360 - normalizedRotation + indicatorAngle) % 360;
+    const selectedIndex = Math.floor(adjustedAngle / sliceAngle) % 8;
     const recipe = recipes[selectedIndex];
 
     if (recipe) {
