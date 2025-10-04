@@ -5,10 +5,12 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a0a0a 50%, #2d0a0a 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     color: #fff;
+    overflow-x: hidden;
 }
 
 .container {
@@ -26,6 +28,7 @@ body {
     align-items: center;
     gap: 30px;
     z-index: 100;
+    padding: 0 20px;
 }
 
 .filters {
@@ -37,52 +40,109 @@ body {
     flex-direction: column;
     gap: 15px;
     z-index: 100;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px 15px;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 .filters select {
-    background: rgba(255,215,0,0.2);
+    background: rgba(255,215,0,0.15);
     color: #FFD700;
-    border: 2px solid #FFD700;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-size: 0.95rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
+    outline: none;
+    min-width: 180px;
 }
 
 .filters select:hover {
-    background: rgba(255,215,0,0.3);
+    background: rgba(255,215,0,0.25);
+    border-color: #FFD700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.filters select:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
 }
 
 .filters select option {
     background: #1a1a1a;
     color: #FFD700;
+    padding: 10px;
 }
 
 h1 {
     color: #FFD700;
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
-    letter-spacing: 2px;
+    font-size: 2.8rem;
+    font-weight: 800;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
+                 2px 2px 10px rgba(0,0,0,0.9);
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+}
+
+h1::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
 }
 
 .lang-toggle {
-    background: #FFD700;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
     color: #000;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 1rem;
-    font-weight: bold;
-    border-radius: 25px;
+    font-weight: 700;
+    border-radius: 30px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255,215,0,0.4);
-    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(255,215,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.lang-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.lang-toggle:hover::before {
+    left: 100%;
 }
 
 .lang-toggle:hover {
-    background: #FFC700;
-    transform: scale(1.05);
+    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255,215,0,0.6);
+}
+
+.lang-toggle:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(255,215,0,0.4);
 }
 
 .wheel-section {
@@ -100,8 +160,12 @@ h1 {
 
 #wheel {
     border-radius: 50%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-    border: 15px solid #FFD700;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.9),
+                0 0 80px rgba(255, 215, 0, 0.3),
+                inset 0 0 50px rgba(0,0,0,0.5);
+    border: 15px solid transparent;
+    background: linear-gradient(#1a1a1a, #1a1a1a) padding-box,
+                linear-gradient(135deg, #FFD700, #FFA500, #FFD700) border-box;
 }
 
 .indicator {
@@ -111,20 +175,23 @@ h1 {
     transform: translateY(-50%);
     width: 0;
     height: 0;
-    border-top: 30px solid transparent;
-    border-bottom: 30px solid transparent;
-    border-right: 50px solid #FFD700;
-    filter: drop-shadow(0 5px 15px rgba(255,215,0,0.6));
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+    border-right: 55px solid #FFD700;
+    filter: drop-shadow(0 5px 20px rgba(255,215,0,0.8))
+            drop-shadow(0 0 10px rgba(255,215,0,0.6));
     z-index: 10;
     animation: pulse 2s ease-in-out infinite;
 }
 
 @keyframes pulse {
     0%, 100% {
-        filter: drop-shadow(0 5px 15px rgba(255,215,0,0.6));
+        filter: drop-shadow(0 5px 20px rgba(255,215,0,0.8))
+                drop-shadow(0 0 10px rgba(255,215,0,0.6));
     }
     50% {
-        filter: drop-shadow(0 5px 30px rgba(255,215,0,1));
+        filter: drop-shadow(0 5px 35px rgba(255,215,0,1))
+                drop-shadow(0 0 25px rgba(255,215,0,0.9));
     }
 }
 
@@ -149,52 +216,110 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
-    border: 5px solid #FFD700;
-    background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+    border: 6px solid #FFD700;
+    background: linear-gradient(135deg, #FF1744 0%, #D50000 100%);
     color: white;
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 1px;
     cursor: pointer;
-    box-shadow: 0 10px 30px rgba(255,0,0,0.5);
-    transition: all 0.2s;
+    box-shadow: 0 10px 40px rgba(255,0,0,0.6),
+                0 0 30px rgba(255,215,0,0.3),
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                inset 0 -2px 5px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
     z-index: 20;
     animation: btnPulse 2s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+#spin-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes btnPulse {
     0%, 100% {
-        box-shadow: 0 10px 30px rgba(255,0,0,0.5);
+        box-shadow: 0 10px 40px rgba(255,0,0,0.6),
+                    0 0 30px rgba(255,215,0,0.3),
+                    inset 0 2px 0 rgba(255,255,255,0.3),
+                    inset 0 -2px 5px rgba(0,0,0,0.5);
     }
     50% {
-        box-shadow: 0 10px 40px rgba(255,0,0,0.8), 0 0 20px rgba(255,215,0,0.5);
+        box-shadow: 0 10px 50px rgba(255,0,0,0.8),
+                    0 0 50px rgba(255,215,0,0.6),
+                    inset 0 2px 0 rgba(255,255,255,0.3),
+                    inset 0 -2px 5px rgba(0,0,0,0.5);
     }
 }
 
 #spin-btn:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-    background: linear-gradient(135deg, #CC0000 0%, #990000 100%);
+    transform: translate(-50%, -50%) scale(1.15);
+    background: linear-gradient(135deg, #D50000 0%, #B71C1C 100%);
+    border-color: #FFA500;
+}
+
+#spin-btn:active {
+    transform: translate(-50%, -50%) scale(1.05);
 }
 
 #spin-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    animation: none;
+    transform: translate(-50%, -50%);
+}
+
+#spin-btn:disabled::before {
     animation: none;
 }
 
 .recipe-section {
     flex: 1;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(20px);
     padding: 120px 40px 40px;
     overflow-y: auto;
-    box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.7);
     display: none;
-    border-left: 3px solid #FFD700;
+    border-left: 3px solid transparent;
+    border-image: linear-gradient(to bottom, #FFD700, #FFA500) 1;
     opacity: 0;
     transform: translateX(20px);
     transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.recipe-section::-webkit-scrollbar {
+    width: 10px;
+}
+
+.recipe-section::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+}
+
+.recipe-section::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-radius: 5px;
+}
+
+.recipe-section::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #FFA500, #FFD700);
 }
 
 .recipe-section.active {
@@ -215,15 +340,34 @@ h1 {
 
 .recipe-image {
     width: 100%;
-    height: 250px;
+    height: 280px;
     background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-    border-radius: 15px;
-    margin-bottom: 20px;
+    border-radius: 20px;
+    margin-bottom: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 5rem;
-    box-shadow: 0 5px 20px rgba(255,215,0,0.3);
+    font-size: 6rem;
+    box-shadow: 0 10px 40px rgba(255,215,0,0.4),
+                inset 0 -5px 20px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.recipe-image::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%);
+    animation: imageShimmer 4s infinite;
+}
+
+@keyframes imageShimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 .difficulty {
@@ -240,38 +384,76 @@ h1 {
 #recipe-name {
     color: #FFD700;
     margin-bottom: 20px;
-    font-size: 2.5rem;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+    font-size: 2.8rem;
+    font-weight: 800;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
+                 2px 2px 10px rgba(0,0,0,0.9);
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 #recipe-country {
-    color: #FFD700;
-    font-size: 1.3rem;
+    color: #FFA500;
+    font-size: 1.4rem;
     margin-bottom: 30px;
-    font-weight: bold;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 #recipe-details {
-    background: rgba(255,215,0,0.1);
-    padding: 20px;
-    border-radius: 12px;
+    background: rgba(255,215,0,0.08);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 16px;
     margin-bottom: 30px;
     text-align: right;
-    border: 2px solid #FFD700;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+#recipe-details:hover {
+    border-color: rgba(255, 215, 0, 0.6);
+    background: rgba(255,215,0,0.12);
+    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.2);
 }
 
 #recipe-details p {
-    margin: 10px 0;
-    font-size: 1.1rem;
+    margin: 12px 0;
+    font-size: 1.15rem;
     color: #fff;
+    line-height: 1.6;
 }
 
 #recipe-instructions {
     text-align: right;
     line-height: 2;
     white-space: pre-wrap;
-    font-size: 1.1rem;
-    color: #fff;
+    font-size: 1.15rem;
+    color: #e0e0e0;
+    background: rgba(255,215,0,0.05);
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid rgba(255, 215, 0, 0.4);
+}
+
+@media (max-width: 1024px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    .filters {
+        left: 10px;
+        padding: 15px 10px;
+    }
+
+    .filters select {
+        min-width: 150px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -280,10 +462,61 @@ h1 {
     }
 
     .wheel-section {
-        min-height: 50vh;
+        min-height: 60vh;
+        padding: 20px;
     }
 
     .recipe-section {
-        padding: 20px;
+        padding: 100px 20px 20px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .lang-toggle {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .filters {
+        position: fixed;
+        top: auto;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .filters select {
+        min-width: 130px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    #wheel {
+        width: 300px !important;
+        height: 300px !important;
+    }
+
+    #spin-btn {
+        width: 80px;
+        height: 80px;
+        font-size: 1.1rem;
+    }
+
+    #recipe-name {
+        font-size: 2rem;
+    }
+
+    #recipe-country {
+        font-size: 1.1rem;
+    }
+
+    .recipe-image {
+        height: 200px;
+        font-size: 4rem;
     }
 }
