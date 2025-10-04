@@ -30,10 +30,10 @@ body {
 
 .filters {
     position: absolute;
-    top: 80px;
-    width: 100%;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    justify-content: center;
     gap: 15px;
     z-index: 100;
 }
