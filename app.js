@@ -76,28 +76,81 @@ const translations = {
     }
 };
 
-// Load data
-fetch('data/foods.json')
-    .then(res => res.json())
-    .then(data => {
-        allRecipes = data.recipes;
-        recipes = allRecipes;
-        countries = data.countries.reduce((acc, c) => {
-            acc[c.code] = c.name;
-            return acc;
-        }, {});
+// API Configuration
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3000/api'
+  : 'https://foodwheel-diea.onrender.com/api';
 
-        // Populate cuisine filter
-        const cuisines = [...new Set(data.countries.map(c => c.name))];
-        cuisines.forEach(cuisine => {
-            const option = document.createElement('option');
-            option.value = cuisine;
-            option.textContent = cuisine;
-            cuisineFilter.appendChild(option);
-        });
+// Load data from API
+async function loadData() {
+    try {
+        // Fetch recipes and countries in parallel
+        const [recipesRes, countriesRes] = await Promise.all([
+            fetch(`${API_URL}/recipes`),
+            fetch(`${API_URL}/countries`)
+        ]);
 
-        drawWheel();
-    });
+        const recipesData = await recipesRes.json();
+        const countriesData = await countriesRes.json();
+
+        if (recipesData.success && countriesData.success) {
+            allRecipes = recipesData.data.map(r => ({
+                id: r.id,
+                name: r.name,
+                description: r.description,
+                cookingTime: r.cooking_time,
+                prepareTime: r.prepare_time,
+                servingSize: r.serving_size,
+                instructions: r.instructions,
+                categoryId: r.category_id,
+                country: r.country
+            }));
+            recipes = allRecipes;
+
+            countries = countriesData.data.reduce((acc, c) => {
+                acc[c.country_code] = c.country_name;
+                return acc;
+            }, {});
+
+            // Populate cuisine filter
+            countriesData.data.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country.country_name;
+                option.textContent = country.country_name;
+                cuisineFilter.appendChild(option);
+            });
+
+            drawWheel();
+        } else {
+            throw new Error('Failed to load data');
+        }
+    } catch (error) {
+        console.error('Error loading data:', error);
+        // Fallback to local JSON if API fails
+        fetch('data/foods.json')
+            .then(res => res.json())
+            .then(data => {
+                allRecipes = data.recipes;
+                recipes = allRecipes;
+                countries = data.countries.reduce((acc, c) => {
+                    acc[c.code] = c.name;
+                    return acc;
+                }, {});
+
+                const cuisines = [...new Set(data.countries.map(c => c.name))];
+                cuisines.forEach(cuisine => {
+                    const option = document.createElement('option');
+                    option.value = cuisine;
+                    option.textContent = cuisine;
+                    cuisineFilter.appendChild(option);
+                });
+
+                drawWheel();
+            });
+    }
+}
+
+loadData();
 
 function filterRecipes() {
     const cuisine = cuisineFilter.value;
