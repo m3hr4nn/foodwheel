@@ -1,4 +1,5 @@
 let recipes = [];
+let allRecipes = [];
 let countries = {};
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
@@ -8,11 +9,49 @@ const recipeSection = document.getElementById('recipe-section');
 const langToggle = document.getElementById('lang-toggle');
 const mainTitle = document.getElementById('main-title');
 const htmlTag = document.documentElement;
+const cuisineFilter = document.getElementById('cuisine-filter');
+const timeFilter = document.getElementById('time-filter');
 
 const colors = ['#000000', '#FFFFFF'];
 let currentLang = 'en';
 let currentRotation = 0;
 let isSpinning = false;
+
+const foodEmojis = ['🍕', '🍔', '🍜', '🍱', '🍛', '🥘', '🍲', '🥗', '🍳', '🥙', '🌮', '🍝', '🥟', '🍢', '🍣'];
+
+// Sound effects using Web Audio API
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    if (type === 'click') {
+        oscillator.frequency.value = 800;
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+    } else if (type === 'spin') {
+        oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.3);
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+    } else if (type === 'win') {
+        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.4);
+    }
+}
 
 const translations = {
     en: {
@@ -41,13 +80,54 @@ const translations = {
 fetch('data/foods.json')
     .then(res => res.json())
     .then(data => {
-        recipes = data.recipes;
+        allRecipes = data.recipes;
+        recipes = allRecipes;
         countries = data.countries.reduce((acc, c) => {
             acc[c.code] = c.name;
             return acc;
         }, {});
+
+        // Populate cuisine filter
+        const cuisines = [...new Set(data.countries.map(c => c.name))];
+        cuisines.forEach(cuisine => {
+            const option = document.createElement('option');
+            option.value = cuisine;
+            option.textContent = cuisine;
+            cuisineFilter.appendChild(option);
+        });
+
         drawWheel();
     });
+
+function filterRecipes() {
+    const cuisine = cuisineFilter.value;
+    const time = timeFilter.value;
+
+    recipes = allRecipes.filter(recipe => {
+        const cuisineMatch = cuisine === 'all' || countries[recipe.country] === cuisine;
+
+        let timeMatch = true;
+        const totalTime = (recipe.cookingTime || 0) + (recipe.prepareTime || 0);
+        if (time === 'quick') timeMatch = totalTime < 30;
+        else if (time === 'medium') timeMatch = totalTime >= 30 && totalTime <= 60;
+        else if (time === 'long') timeMatch = totalTime > 60;
+
+        return cuisineMatch && timeMatch;
+    });
+
+    if (recipes.length === 0) {
+        recipes = allRecipes; // Reset if no matches
+    }
+
+    drawWheel();
+}
+
+function getDifficulty(recipe) {
+    const totalTime = (recipe.cookingTime || 0) + (recipe.prepareTime || 0);
+    if (totalTime < 30) return 1;
+    if (totalTime < 60) return 2;
+    return 3;
+}
 
 function drawWheel() {
     const sliceAngle = (2 * Math.PI) / 8;
@@ -77,6 +157,7 @@ function drawWheel() {
 function spin() {
     if (isSpinning) return;
 
+    playSound('spin');
     isSpinning = true;
     spinBtn.disabled = true;
 
@@ -104,6 +185,11 @@ function spin() {
         if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
+            playSound('win');
+            document.querySelector('.indicator').classList.add('glow');
+            setTimeout(() => {
+                document.querySelector('.indicator').classList.remove('glow');
+            }, 500);
             isSpinning = false;
             spinBtn.disabled = false;
             showResult();
@@ -125,6 +211,15 @@ function showResult() {
 
     if (recipe) {
         const t = translations[currentLang];
+        const difficulty = getDifficulty(recipe);
+        const emoji = foodEmojis[Math.floor(Math.random() * foodEmojis.length)];
+
+        // Recipe image with emoji
+        document.getElementById('recipe-image').textContent = emoji;
+
+        // Difficulty stars
+        const difficultyHTML = '⭐'.repeat(difficulty) + '☆'.repeat(3 - difficulty);
+        document.getElementById('difficulty').innerHTML = `<span>${difficultyHTML}</span>`;
 
         document.getElementById('recipe-name').textContent = recipe.name;
         document.getElementById('recipe-country').textContent = countries[recipe.country] || recipe.country;
@@ -157,10 +252,29 @@ function switchLanguage() {
     }
 }
 
-langToggle.addEventListener('click', switchLanguage);
-spinBtn.addEventListener('click', spin);
+langToggle.addEventListener('click', () => {
+    playSound('click');
+    switchLanguage();
+});
+
+spinBtn.addEventListener('click', () => {
+    playSound('click');
+    spin();
+});
+
 wheelContainer.addEventListener('click', (e) => {
     if (e.target === wheelContainer || e.target === canvas) {
+        playSound('click');
         spin();
     }
+});
+
+cuisineFilter.addEventListener('change', () => {
+    playSound('click');
+    filterRecipes();
+});
+
+timeFilter.addEventListener('change', () => {
+    playSound('click');
+    filterRecipes();
 });

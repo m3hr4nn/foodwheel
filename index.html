@@ -12,6 +12,18 @@
         <button class="lang-toggle" id="lang-toggle">فا</button>
     </div>
 
+    <div class="filters">
+        <select id="cuisine-filter">
+            <option value="all">All Cuisines</option>
+        </select>
+        <select id="time-filter">
+            <option value="all">Any Time</option>
+            <option value="quick">Quick (< 30 min)</option>
+            <option value="medium">Medium (30-60 min)</option>
+            <option value="long">Long (> 60 min)</option>
+        </select>
+    </div>
+
     <div class="container">
         <div class="wheel-section">
             <div class="wheel-container">
@@ -22,6 +34,8 @@
         </div>
 
         <div class="recipe-section" id="recipe-section">
+            <div class="recipe-image" id="recipe-image"></div>
+            <div class="difficulty" id="difficulty"></div>
             <h2 id="recipe-name"></h2>
             <p id="recipe-country"></p>
             <div id="recipe-details"></div>

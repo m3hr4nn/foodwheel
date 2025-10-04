@@ -28,6 +28,36 @@ body {
     z-index: 100;
 }
 
+.filters {
+    position: absolute;
+    top: 80px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    z-index: 100;
+}
+
+.filters select {
+    background: rgba(255,215,0,0.2);
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filters select:hover {
+    background: rgba(255,215,0,0.3);
+}
+
+.filters select option {
+    background: #1a1a1a;
+    color: #FFD700;
+}
+
 h1 {
     color: #FFD700;
     font-size: 2.5rem;
@@ -85,6 +115,32 @@ h1 {
     border-right: 50px solid #FFD700;
     filter: drop-shadow(0 5px 15px rgba(255,215,0,0.6));
     z-index: 10;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        filter: drop-shadow(0 5px 15px rgba(255,215,0,0.6));
+    }
+    50% {
+        filter: drop-shadow(0 5px 30px rgba(255,215,0,1));
+    }
+}
+
+.indicator.glow {
+    animation: glow 0.5s ease-out;
+}
+
+@keyframes glow {
+    0% {
+        filter: drop-shadow(0 5px 15px rgba(255,215,0,0.6));
+    }
+    50% {
+        filter: drop-shadow(0 0 40px rgba(255,215,0,1)) drop-shadow(0 0 60px rgba(255,215,0,0.8));
+    }
+    100% {
+        filter: drop-shadow(0 5px 15px rgba(255,215,0,0.6));
+    }
 }
 
 #spin-btn {
@@ -104,6 +160,16 @@ h1 {
     box-shadow: 0 10px 30px rgba(255,0,0,0.5);
     transition: all 0.2s;
     z-index: 20;
+    animation: btnPulse 2s ease-in-out infinite;
+}
+
+@keyframes btnPulse {
+    0%, 100% {
+        box-shadow: 0 10px 30px rgba(255,0,0,0.5);
+    }
+    50% {
+        box-shadow: 0 10px 40px rgba(255,0,0,0.8), 0 0 20px rgba(255,215,0,0.5);
+    }
 }
 
 #spin-btn:hover {
@@ -114,6 +180,7 @@ h1 {
 #spin-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    animation: none;
 }
 
 .recipe-section {
@@ -124,10 +191,49 @@ h1 {
     box-shadow: -5px 0 20px rgba(0,0,0,0.5);
     display: none;
     border-left: 3px solid #FFD700;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .recipe-section.active {
     display: block;
+    animation: slideIn 0.5s ease forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.recipe-image {
+    width: 100%;
+    height: 250px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    border-radius: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    box-shadow: 0 5px 20px rgba(255,215,0,0.3);
+}
+
+.difficulty {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.difficulty span {
+    color: #FFD700;
+    font-size: 1.5rem;
 }
 
 #recipe-name {
