@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چرخ غذا - امروز چی بخوریم؟</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>امروز چی بخوریم؟</h1>
+        <div class="wheel-container">
+            <canvas id="wheel" width="500" height="500"></canvas>
+            <button id="spin-btn">بچرخان!</button>
+        </div>
+    </div>
+
+    <div id="recipe-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="recipe-name"></h2>
+            <p id="recipe-country"></p>
+            <div id="recipe-details"></div>
+            <div id="recipe-instructions"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
